@@ -1,15 +1,28 @@
 import { useFetcher } from "@remix-run/react";
+import { countries, Country } from "~/constants";
 
 type FormData = {
-  text: string;
+  searchResults: Country[];
 }
 
 export async function action({ request }: { request: Request }) {
-  const formData = await request.formData()
-  const text = formData.get("text") as string;
+  const formData = await request.formData();
+  const searchText = formData.get("text") as string;
+  // 入力文字数に対して遅延をつける
+  const delay = searchText.length * 500;
+
+  // 疑似API呼び出し
+  const searchResults = await new Promise<Country[]>(resolve => {
+    setTimeout(() => {
+      const filteredSuggestions = countries.filter((country) =>
+        country.name.toLowerCase().includes(searchText.toLowerCase())
+      );
+      resolve(filteredSuggestions);
+    }, delay);
+  });
 
   return {
-    text,
+    searchResults
   };
 }
 
@@ -24,12 +37,16 @@ export default function Route() {
   }
 
   return (
-    <div>
+    <div className="p-24">
       <fetcher.Form method="post" onChange={handleChange}>
-        <p>fetcher form</p>
+        <p>search form by useFetcher</p>
         <input type="text" name="text" />
       </fetcher.Form>
-      {fetcher.data && <p>{fetcher.data.text}</p>}
+      <div>
+        {fetcher.data?.searchResults.map((result) => (
+          <div key={result.id}>{result.name}</div>
+        ))}
+      </div>
     </div>
   );
 }
