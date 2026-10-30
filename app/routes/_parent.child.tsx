@@ -1,4 +1,4 @@
-import { Outlet, useLoaderData, useOutletContext } from "@remix-run/react";
+import { Outlet, useLoaderData, useOutletContext } from "react-router";
 
 export function loader() {
   return {
