@@ -52,8 +52,8 @@ export default function Todos() {
     optimisticTodos = [
       ...todos,
       {
-        // DBのデータと区別するためprefixをつける
-        id: 'optimistic-' + Math.random(),
+        // DBのデータと区別するための固定id（fetcherは1つなので楽観表示は同時に1件だけ）
+        id: 'optimistic',
         text,
       },
     ];
